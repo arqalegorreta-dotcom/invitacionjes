@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>La Serenata de Pedro - Invitación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTÉTICA CINE DE ORO (NO CAMBIAR) --- */
+        :root{ --bg-dark: #111; --paper: #e8e0cc; --accent: #8b0000; --frame: #333; }
+        html,body{ height:100%; }
+        body {
+            background-color: var(--bg-dark); margin: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Special Elite', monospace; color: #dcdcdc;
+        }
+        /* Efecto de grano de película antiguo */
+        .film-grain {
+            position: fixed; inset: 0; pointer-events: none; z-index: 10; opacity: 0.35; mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+        .cinema-container {
+            width: 900px; max-width: 95%; height: 85vh; max-height: 1100px;
+            background-color: var(--paper); color: #222; border: 8px double #444;
+            box-shadow: 0 0 50px rgba(0,0,0,0.6); position: relative; display: flex;
+            flex-direction: column; overflow: hidden; border-radius: 6px;
+        }
+        .movie-header {
+            text-align: center; padding: 20px; border-bottom: 2px solid #555;
+            background: linear-gradient(to bottom, #dcdcdc, #b0b0b0);
+        }
+        .movie-header h1 {
+            font-family: 'Cinzel', serif; font-size: 2rem; margin: 0;
+            text-transform: uppercase; letter-spacing: 3px; color: #111;
+        }
+        .scene {
+            flex: 1 1 auto; padding: 18px; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            overflow-y: auto; gap: 12px; animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .photo-frame {
+            width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--frame);
+            padding: 3px; object-fit: cover; filter: grayscale(100%) contrast(1.2);
+            margin-bottom: 6px; box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        .photo-frame:hover { transform: scale(1.05) rotate(2deg); }
+
+        .dialogue {
+            background: #fff; padding: 15px; border: 1px solid #555; max-width: 850px;
+            width: calc(100% - 40px); margin-bottom: 6px; font-size: 1.05rem;
+            line-height: 1.4; box-shadow: 5px 5px 0px rgba(0,0,0,0.2); position: relative; color: #111;
+        }
+        .btn-group {
+            display: flex; flex-direction: column; gap: 10px; width: 100%;
+            max-width: 420px; align-items: center;
+        }
+        .btn {
+            background-color: #333; color: #fff; border: none; padding: 12px 18px;
+            font-family: 'Special Elite', monospace; font-size: 1rem; cursor: pointer;
+            text-transform: uppercase; border: 1px dashed #fff; width: 100%; max-width: 380px;
+            transition: transform 0.1s ease, background 0.15s ease;
+        }
+        .btn:hover { transform: scale(1.02); background:#000; }
+        .btn-rsvp { background-color: #2e7d32; font-weight: 700; margin-top: 8px; }
+        .info-box {
+            background: #fdfdfd; border: 2px solid var(--frame); padding: 12px;
+            margin-top: 6px; text-align: left; width: 90%; max-width: 520px;
+        }
+        .highlight { color: var(--accent); font-weight: bold; }
+        @media (max-width: 700px) {
+            .movie-header h1 { font-size: 1.35rem; }
+            .photo-frame { width: 110px; height: 110px; }
+            .dialogue { font-size: 0.95rem; width: 95%; }
+            .cinema-container { height: 100vh; border-radius: 0; border: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="film-grain"></div>
+
+    <audio id="music-player" loop preload="auto"></audio>
+    <audio id="sfx-correct" src="https://www.myinstants.com/media/instants_pedro-infante-risa.mp3"></audio>
+    <audio id="sfx-incorrect" src="https://www.myinstants.com/media/instants_error-sound.mp3"></audio>
+
+    <main class="cinema-container">
+        <header class="movie-header">
+            <h1 id="main-title">La Misión de Pedro</h1>
+        </header>
+
+        <section id="scene-intro" class="scene" style="display:flex;">
+            <img id="img-intro" src="" alt="Intro" class="photo-frame">
+            <div class="dialogue">
+                "¡Quihubo, compadre! Unos bandidos escondieron los datos de la fiesta de 
+                <span class="highlight" id="name-display-1">Papá</span>.
+                ¿Me ayudas a recordar para que empiece la pachanga?"
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="startGame()">¡Claro que sí, mi General!</button>
+            </div>
+        </section>
+
+        <section id="scene-q1" class="scene">
+            <img id="img-q1" src="" alt="Pregunta 1" class="photo-frame">
+            <div class="dialogue">
+                "Para saber la <strong>FECHA</strong>, complétame la canción: <br>
+                <em>'Amorcito corazón, yo tengo...'</em>"
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="wrongAnswer()">A) Un gran dolor</button>
+                <button class="btn" onclick="nextLevel(2)">B) Tentación</button>
+                <button class="btn" onclick="wrongAnswer()">C) Mucha hambre</button>
+            </div>
+        </section>
+
+        <section id="scene-q2" class="scene">
+            <img id="img-q2" src="" alt="Pregunta 2" class="photo-frame">
+            <div class="dialogue">
+                "¡A toda máquina! Para llegar a la <strong>HORA</strong> correcta... 
+                ¿Qué grita Pedro cuando va tarde en su moto?"
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="nextLevel(3)">A) ¡Ámonos recio!</button>
+                <button class="btn" onclick="wrongAnswer()">B) ¡Esperen al mariachi!</button>
+                <button class="btn" onclick="wrongAnswer()">C) ¡Ya me cansé!</button>
+            </div>
+        </section>
+
+        <section id="scene-q3" class="scene">
+            <img id="img-q3" src="" alt="Pregunta 3" class="photo-frame">
+            <div class="dialogue">
+                "Pedro Malo y Jorge Bueno se retan a coplas. 
+                ¿Dónde es la cita para encontrar el <strong>LUGAR</strong> de la fiesta?"
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="wrongAnswer()">A) En la cárcel</button>
+                <button class="btn" onclick="nextLevel('final')">B) En la Feria del Pueblo</button>
+                <button class="btn" onclick="wrongAnswer()">C) En correos</button>
+            </div>
+        </section>
+
+        <section id="scene-final" class="scene">
+            <img id="img-final" src="" alt="Final" class="photo-frame">
+            <div class="dialogue">
+                "¡Eso es todo, campeón! ¡Misión Cumplida! <br>
+                Ya tenemos todo listo para festejar a <span class="highlight" id="name-display-2">Papá</span>."
+            </div>
+            <div class="info-box">
+                <p>📅 <strong>FECHA:</strong> <span id="data-date">...</span></p>
+                <p>⏰ <strong>HORA:</strong> <span id="data-time">...</span></p>
+                <p>📍 <strong>LUGAR:</strong> <span id="data-location">...</span></p>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-rsvp" id="rsvp-btn">CONFIRMAR ASISTENCIA (WhatsApp)</button>
+            </div>
+        </section>
+
+        <section id="scene-error" class="scene">
+            <img id="img-error" src="" alt="Error" class="photo-frame" style="border-color:var(--accent);">
+            <div class="dialogue">
+                "¡Ay, torito! Esa no era. Pero no te preocupes, los valientes siempre tienen una segunda oportunidad."
+            </div>
+            <button class="btn" onclick="retryLevel()" style="background-color: var(--accent);">VOLVER A INTENTAR</button>
+        </section>
+    </main>
+
+    <script>
+        // =====================================================================
+        // 🛠️  AQUI_CONFIGURAS_TODO - (EDITA ESTA PARTE) 🛠️
+        // =====================================================================
+        
+        const CONFIGURACION = {
+            datosFiesta: {
+                nombrePapa: "Jesús Legorreta",           // Nombre del festejado
+                fecha: "Domingo 14 de Diciembre",   // Fecha
+                hora: "2:00 PM",                    // Hora
+                lugar: "Casa Legorreta",        // Dirección
+                celularWhatsApp: "525543694133"    // Tu número con código de país (sin el +)
+            },
+            
+            // --- PEGA AQUI TUS FOTOS (Usa enlaces de Imgur, ImgBB o GitHub) ---
+            imagenes: {
+                portada:   "https://upload.wikimedia.org/wikipedia/commons/e/e0/Pedro_Infante.jpg", // Foto Escena 1 (Intro)
+                pregunta1: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Pedro_Infante.jpg", // Foto Escena 2
+                pregunta2: "https://i.pinimg.com/736x/87/40/3e/87403e23630f142e88a0b0d3e20092f6.jpg", // Foto Escena 3 (Moto)
+                pregunta3: "https://i.pinimg.com/originals/e8/51/95/e8519587425881df394602cb9378297e.jpg", // Foto Escena 4 (Dos tipos)
+                final:     "https://img.chilango.com/2023/11/pedro-infante-en-navidad.jpg", // Foto Final (Felicidad)
+                error:     "https://pbs.twimg.com/media/EhO_k2JXYAAXyQy.jpg" // Foto cuando se equivocan
+            },
+
+            // --- PEGA AQUI TU MUSICA (Enlaces mp3) ---
+            // Si quieres silencio en alguna, deja las comillas vacías ""
+            musica: {
+                intro:     "https://ia800508.us.archive.org/29/items/PedroInfanteAmorcitoCorazn/Pedro%20Infante%20-%20Amorcito%20Coraz%C3%B3n.mp3", 
+                pregunta1: "https://ia800508.us.archive.org/29/items/PedroInfanteAmorcitoCorazn/Pedro%20Infante%20-%20Amorcito%20Coraz%C3%B3n.mp3", // Puede ser la misma o diferente
+                pregunta2: "https://ia600305.us.archive.org/24/items/A.T.M.A.TodaMaquina/A.T.M.%20A%20toda%20m%C3%A1quina%21.mp3", // Canción de la moto
+                pregunta3: "https://ia800205.us.archive.org/16/items/CoplasDeRetache/Dos%20Tipos%20De%20Cuidado%20-%20Coplas.mp3", // Coplas
+                final2:     "https://ia801400.us.archive.org/33/items/las-mananitas-pedro-infante/Las%20Ma%C3%B1anitas%20-%20Pedro%20Infante.mp3", // Las mañanitas
+                error2:     "" // Generalmente sin música de fondo, solo el efecto de sonido
+            }
+        };
+
+        // =====================================================================
+        // ⚙️  CODIGO DEL SISTEMA (NO HACE FALTA TOCAR NADA ABAJO) ⚙️
+        // =====================================================================
+        
+        let lastScene = 'scene-q1'; // Para recordar donde volver si falla
+        const audioPlayer = document.getElementById('music-player');
+        
+        // Cargar datos al iniciar
+        window.onload = function() {
+            // Textos
+            document.getElementById('name-display-1').innerText = CONFIGURACION.datosFiesta.nombrePapa;
+            document.getElementById('name-display-2').innerText = CONFIGURACION.datosFiesta.nombrePapa;
+            document.getElementById('data-date').innerText = CONFIGURACION.datosFiesta.fecha;
+            document.getElementById('data-time').innerText = CONFIGURACION.datosFiesta.hora;
+            document.getElementById('data-location').innerText = CONFIGURACION.datosFiesta.lugar;
+
+            // Imágenes
+            document.getElementById('img-intro').src = CONFIGURACION.imagenes.portada;
+            document.getElementById('img-q1').src = CONFIGURACION.imagenes.pregunta1;
+            document.getElementById('img-q2').src = CONFIGURACION.imagenes.pregunta2;
+            document.getElementById('img-q3').src = CONFIGURACION.imagenes.pregunta3;
+            document.getElementById('img-final').src = CONFIGURACION.imagenes.final;
+            document.getElementById('img-error').src = CONFIGURACION.imagenes.error;
+
+            // Botón WhatsApp
+            document.getElementById('rsvp-btn').onclick = function() {
+                let msj = "Hola, confirmo mi asistencia para la fiesta de " + CONFIGURACION.datosFiesta.nombrePapa;
+                window.open(`https://wa.me/${CONFIGURACION.datosFiesta.celularWhatsApp}?text=${encodeURIComponent(msj)}`, '_blank');
+            };
+        };
+
+        function playMusic(url) {
+            if(!url) {
+                audioPlayer.pause();
+                return;
+            }
+            if(audioPlayer.src !== url) {
+                audioPlayer.src = url;
+                audioPlayer.volume = 0.4;
+                audioPlayer.play().catch(e => console.log("Esperando interacción para reproducir audio"));
+            }
+        }
+
+        function switchDisplay(id) {
+            document.querySelectorAll('.scene').forEach(el => el.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        // --- Funciones del Juego ---
+
+        function startGame() {
+            // Al hacer clic aquí, el navegador permite reproducir audio
+            playMusic(CONFIGURACION.musica.pregunta1);
+            switchDisplay('scene-q1');
+            lastScene = 'scene-q1';
+        }
+
+        function nextLevel(level) {
+            document.getElementById('sfx-correct').play();
+            
+            if(level === 2) {
+                playMusic(CONFIGURACION.musica.pregunta2);
+                switchDisplay('scene-q2');
+                lastScene = 'scene-q2';
+            } else if(level === 3) {
+                playMusic(CONFIGURACION.musica.pregunta3);
+                switchDisplay('scene-q3');
+                lastScene = 'scene-q3';
+            } else if(level === 'final') {
+                playMusic(CONFIGURACION.musica.final);
+                switchDisplay('scene-final');
+            }
+        }
+
+        function wrongAnswer() {
+            document.getElementById('sfx-incorrect').play();
+            playMusic(CONFIGURACION.musica.error); // Pone la musica de error (o silencio)
+            switchDisplay('scene-error');
+        }
+
+        function retryLevel() {
+            // Volver a poner la música de la pregunta donde estaba
+            if(lastScene === 'scene-q1') playMusic(CONFIGURACION.musica.pregunta1);
+            if(lastScene === 'scene-q2') playMusic(CONFIGURACION.musica.pregunta2);
+            if(lastScene === 'scene-q3') playMusic(CONFIGURACION.musica.pregunta3);
+            
+            switchDisplay(lastScene);
+        }
+    </script>
+</body>
+</html>
