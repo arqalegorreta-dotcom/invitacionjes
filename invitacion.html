@@ -231,6 +231,9 @@
                 let msj = "Hola, confirmo mi asistencia para la fiesta de " + CONFIGURACION.datosFiesta.nombrePapa;
                 window.open(`https://wa.me/${CONFIGURACION.datosFiesta.celularWhatsApp}?text=${encodeURIComponent(msj)}`, '_blank');
             };
+            
+            // 👇👇 PEGA ESTA LÍNEA AQUÍ 👇👇
+            playMusic(CONFIGURACION.musica.intro);
         };
 
         function playMusic(url) {
@@ -294,4 +297,5 @@
 </body>
 
 </html>
+
 
